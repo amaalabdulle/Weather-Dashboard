@@ -1,0 +1,22 @@
+/* h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+header {
+    background-color: blue;
+} */
+
+.background {
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(95,185,255,1) 100%, rgba(128,139,231,1) 100%, rgba(165,198,242,1) 100%, rgba(85,85,185,1) 100%);
+}
+
+#today {
+    border: 1px solid black;
+    padding: 10px;
+    height: 200px;
+}
+
