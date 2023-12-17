@@ -2,7 +2,6 @@
 var APIKey = "0b4e30e3e56350c47a32b96d1f57a18b";
 
 // Here we are building the URL we need to query the database
-// var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=london&appid=" + APIKey;
 var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=london&appid=" + APIKey;
 
 const form = $('#search-form');
@@ -13,12 +12,12 @@ const citySearch = $('#search-input');
 const history = $('#history');
 const forecast = $('#forecast');
 
-
 form.on('submit', function(event) {
   event.preventDefault();
 
   const cityName = formInput.val();
   const queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&appid=" + APIKey + "&units=metric";
+
 
   fetch(queryURL)
     .then(function (response) {
@@ -26,8 +25,12 @@ form.on('submit', function(event) {
     })
     .then(function (data) {
       console.log(data);
-    // city name
+
+    // city name & icon
+    const weatherIconUrl = 'https://openweathermap.org/img/w/' + data.list[0].weather[0].icon + '.png';
+    const weatherIcon = $('<img>').attr('src', weatherIconUrl).addClass('weather-icon');
     const city = $('<h1>').text(data.city.name);
+    city.append(weatherIcon);
     today.append(city);
 
     // temperature
@@ -42,8 +45,7 @@ form.on('submit', function(event) {
     const humidity = $('<p>').text('Humidity: ' + data.list[0].main.humidity + ' %');
     today.append(humidity);
 
-    // forecast section
-    // adding temp, wind, and humidity to smaller cards
+    // adding the 5 day 3 hour forecast to the forecast section
     
     forecast.empty();
 
@@ -55,49 +57,40 @@ form.on('submit', function(event) {
       const cardGroup = $('<div>').addClass('card-group ');
       const card = $('<div>').addClass('card col-md-2 mb-3');
       const cardBody = $('<div>').addClass('card-body');
-      const cardDate = $('<h2>').addClass('card-title');
       const cardText = $('<p>').addClass('card-text');
-
+      const iconURL = 'http://openweathermap.org/img/w/' + forecastData.weather[0].icon + '.png';
 
       // Display time, temperature, wind, and humidity in each card
-      const cardTime = $('<p>').text(new Date(forecastData.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      const cardDate = $('<h4>').addClass('card-title').text(forecastData.dt_txt);
+      const icon = $('<img>').attr('src', iconURL).addClass('weather-icon');
       const cardTemp = $('<p>').text('Temp: ' + forecastData.main.temp + ' ˚C');
       const cardWind = $('<p>').text('Wind: ' + forecastData.wind.speed + ' KPH');
       const cardHumidity = $('<p>').text('Humidity: ' + forecastData.main.humidity + ' %');
 
-    // const cardTime = cardDate.text(new Date(forecastData.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    // const cardTemp = card.text('Temperature: ' + forecastData.main.temp + ' ˚C');
-    // const cardWind = card.text('Wind: ' + forecastData.wind.speed + ' KPH');
-
       // Append elements to the card
-      card.append(cardTime, cardText);
-      cardBody.append(cardTemp, cardWind, cardHumidity);
+      card.append(cardDate, cardText);
+      cardBody.append(icon, cardTemp, cardWind, cardHumidity);
       card.append(cardBody);
       cardGroup.append(card);
       
-
       // Append the card to the forecast container
       forecast.append(card);
     }
     });
 });
 
-// making the search history as buttons
-// var searchedCities = [];
+  // making the search history as buttons
+//   var searchedCities = [];
 
-// search.on("click", function(event) {
-//     event.preventDefault();
-//     const cityName = citySearch.val(); 
-    
-//     if (cityName.trim() !== '' && !searchedCities.includes(cityName)) {
-//     const cityButton = $('<button>').text(cityName);
-//     history.append(cityButton);
-//     searchedCities.push(cityName);
-//     search.val(""); // clears the search bar
-//     }
-// });
-
-// adding the 5 day 3 hour forecast to the forecast section
-
-
+//   search.on("click", function(event) {
+//       event.preventDefault();
+//       const cityName = citySearch.val(); 
+      
+//       if (cityName.trim() !== '' && !searchedCities.includes(cityName)) {
+//       const cityButton = $('<button>').text(cityName);
+//       history.append(cityButton);
+//       searchedCities.push(cityName);
+//       search.val(""); // clears the search bar
+//       }
+//   });
 

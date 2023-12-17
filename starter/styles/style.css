@@ -23,4 +23,6 @@ header {
 .card {
     width: 190px;
     margin: 10px;
+    background-color: #154c79;
+    color: white;
 }
