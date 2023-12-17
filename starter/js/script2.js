@@ -48,12 +48,12 @@ form.on('submit', function(event) {
     forecast.empty();
 
     // Loop through the forecast data starting from index 1 (every 3 hours)
-    for (let i = 1; i < data.list.length; i++) {
+    for (let i = 0; i < data.list.length; i++) {
       const forecastData = data.list[i];
 
       // Create a card for each forecast
       const cardGroup = $('<div>').addClass('card-group ');
-      const card = $('<div>').addClass('card col-md-2 mb-3').css('width', '18rem');;
+      const card = $('<div>').addClass('card col-md-2 mb-3');
       const cardBody = $('<div>').addClass('card-body');
       const cardDate = $('<h2>').addClass('card-title');
       const cardText = $('<p>').addClass('card-text');
@@ -61,7 +61,7 @@ form.on('submit', function(event) {
 
       // Display time, temperature, wind, and humidity in each card
       const cardTime = $('<p>').text(new Date(forecastData.dt_txt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-      const cardTemp = $('<p>').text('Temperature: ' + forecastData.main.temp + ' ˚C');
+      const cardTemp = $('<p>').text('Temp: ' + forecastData.main.temp + ' ˚C');
       const cardWind = $('<p>').text('Wind: ' + forecastData.wind.speed + ' KPH');
       const cardHumidity = $('<p>').text('Humidity: ' + forecastData.main.humidity + ' %');
 
