@@ -1,16 +1,34 @@
 var APIKey = "0b4e30e3e56350c47a32b96d1f57a18b";
-var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=london&appid=" + APIKey;
 
+// Here we are building the URL we need to query the database
+var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=london&appid=" + APIKey;
 
 const form = $('#search-form');
 const formInput = $('.form-input');
-const main = $('#today');
+const today = $('#today');
+const search = $('#search-button');
+const citySearch = $('#search-input');
+const history = $('#history');
+const forecast = $('#forecast');
 
-form.on('submit', function(event) {
-  event.preventDefault();
+// Function to add search history button
+function addSearchHistoryButton(cityName) {
+  const historyButton = $('<button>').addClass('history-button').text(cityName);
+  history.append(historyButton);
 
-  const cityName = formInput.val();
+  // Attach a click event to the history button
+  historyButton.on('click', function () {
+    // Perform the search again when a history button is clicked
+    performSearch(cityName);
+  });
+}
+
+
+// Function to perform the search and update the UI
+function performSearch(cityName) {
+  // const cityName = formInput.val();
   const queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&appid=" + APIKey + "&units=metric";
+
 
   fetch(queryURL)
     .then(function (response) {
@@ -19,25 +37,70 @@ form.on('submit', function(event) {
     .then(function (data) {
       console.log(data);
 
-      // city name
-      // main.text(data.city.name);
-      // console.log(data.city.name);
+    // city name & icon
+    const weatherIconUrl = 'https://openweathermap.org/img/w/' + data.list[0].weather[0].icon + '.png';
+    const weatherIcon = $('<img>').attr('src', weatherIconUrl).addClass('weather-icon');
+    const city = $('<h1>').text(data.city.name);
+    city.append(weatherIcon);
+    today.append(city);
 
-      // date
+    // temperature
+    const temp = $('<p>').text('Temperature: ' + data.list[0].main.temp + ' ˚C');
+    today.append(temp);
 
-      // temperature
+    // wind
+    const wind = $('<p>').text('Wind: ' + data.list[0].wind.speed + ' KPH');
+    today.append(wind);
 
+    // humidity
+    const humidity = $('<p>').text('Humidity: ' + data.list[0].main.humidity + ' %');
+    today.append(humidity);
+
+    // adding the 5 day 3 hour forecast to the forecast section
     
+    forecast.empty();
 
+    // Loop through the forecast data starting from index 1 (every 3 hours)
+    for (let i = 0; i < data.list.length; i++) {
+      const forecastData = data.list[i];
+
+      // Create a card for each forecast
+      const cardGroup = $('<div>').addClass('card-group ');
+      const card = $('<div>').addClass('card col-md-2 mb-3');
+      const cardBody = $('<div>').addClass('card-body');
+      const cardText = $('<p>').addClass('card-text');
+      const iconURL = 'http://openweathermap.org/img/w/' + forecastData.weather[0].icon + '.png';
+
+      // Display time, temperature, wind, and humidity in each card
+      const cardDate = $('<h4>').addClass('card-title').text(forecastData.dt_txt);
+      const icon = $('<img>').attr('src', iconURL).addClass('weather-icon');
+      const cardTemp = $('<p>').text('Temp: ' + forecastData.main.temp + ' ˚C');
+      const cardWind = $('<p>').text('Wind: ' + forecastData.wind.speed + ' KPH');
+      const cardHumidity = $('<p>').text('Humidity: ' + forecastData.main.humidity + ' %');
+
+      // Append elements to the card
+      card.append(cardDate, cardText);
+      cardBody.append(icon, cardTemp, cardWind, cardHumidity);
+      card.append(cardBody);
+      cardGroup.append(card);
+      
+      // Append the card to the forecast container
+      forecast.append(card);
+
+      addSearchHistoryButton(cityName);
+    }
     });
+}
 
 
-})
+form.on('submit', function (event) {
+  event.preventDefault();
 
-// search history
+  const cityName = formInput.val();
 
-// var queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=london&appid=" + APIKey;
-
+  // Perform the search
+  performSearch(cityName);
+});
 
 
 
