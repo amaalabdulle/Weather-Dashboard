@@ -57,7 +57,7 @@ form.on('submit', function(event) {
             forecast.empty();
 
             // Loop through the forecast data starting from index 1 (every 3 hours)
-            for (let i = 0; i < data.list.length; i++) {
+            for (let i = 0; i < data.list.length; i+=8) {
                 const forecastData = data.list[i];
 
                 // Create a card for each forecast
